@@ -34,7 +34,12 @@ converged = False
 plabel1=np.zeros(sample.shape)
 plabel2=np.zeros(sample.shape)
 
-while not converged:
+counter=0
+criterion=0.1
+converged=False
+
+while not converged and counter<100:
+    counter+=1
     mu1, mu2, pi_1 = params
 
     # Expectation
@@ -54,12 +59,14 @@ while not converged:
     mu1=sum(sample*plabel1)/sum(plabel1)
     mu2=sum(sample*plabel2)/sum(plabel2)
     pi_1=sum(plabel1)/len(sample)
-    params=np.array([mu1, mu2, pi_1])
+    newparams=np.array([mu1, mu2, pi_1])
     print params
 
     # Convergence check
-    counter += 1
-    converged = counter >= max_iter
+    if np.max(abs(np.asarray(params)-np.asarray(newparams)))<criterion:
+        converged=True
+
+    params=newparams
 
 plt.title('Histogram of fake data')
 plt.hist(sample,bins=100, normed=True)
